@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label"
 import Image from "next/image"
 import { type ViewMode } from "@/types"
 
-const MOCK_PROMOTIONS = [
+const PALLADIUM_PROMOTIONS = [
   {
     id: '1',
     storeName: 'Coach',
@@ -28,6 +28,27 @@ const MOCK_PROMOTIONS = [
     storeName: 'Armani',
     description: 'Weekend Special',
     discount: '25% OFF'
+  }
+]
+
+const LUCKNOW_PROMOTIONS = [
+  {
+    id: '1',
+    storeName: 'H&M',
+    description: 'Season End Sale',
+    discount: '50% OFF'
+  },
+  {
+    id: '2',
+    storeName: 'Westside',
+    description: 'Festive Collection',
+    discount: '30% OFF'
+  },
+  {
+    id: '3',
+    storeName: 'Zudio',
+    description: 'New Arrivals',
+    discount: '20% OFF'
   }
 ]
 
@@ -56,6 +77,16 @@ export default function MapPage() {
   const highlightColor = selectedMall === 'Phoenix Mall - Lucknow'
     ? 'text-sky-600' // Blue text for Lucknow
     : 'text-emerald-600' // Original emerald text for Palladium
+
+  // Determine map background color based on selected mall
+  const mapBackgroundColor = selectedMall === 'Phoenix Mall - Lucknow'
+    ? 'bg-sky-50' // Light blue background for Lucknow
+    : 'bg-gray-100' // Original gray background for Palladium
+
+  // Determine which promotions to show based on selected mall
+  const currentPromotions = selectedMall === 'Phoenix Mall - Lucknow' 
+    ? LUCKNOW_PROMOTIONS 
+    : PALLADIUM_PROMOTIONS
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -94,7 +125,7 @@ export default function MapPage() {
       </div>
 
       {/* Map View */}
-      <div className="relative flex-1 bg-gray-100">
+      <div className={`relative flex-1 ${mapBackgroundColor}`}>
         <div className="absolute right-4 top-4 flex items-center space-x-2">
           <Switch
             id="view-mode"
@@ -127,7 +158,7 @@ export default function MapPage() {
       <div className="p-4 bg-white">
         <h2 className="text-lg font-semibold mb-4">Promotions</h2>
         <div className="flex gap-4 overflow-x-auto pb-4">
-          {MOCK_PROMOTIONS.map((promo) => (
+          {currentPromotions.map((promo) => (
             <div
               key={promo.id}
               className="flex-shrink-0 w-64 p-4 border rounded-lg"
