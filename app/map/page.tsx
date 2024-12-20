@@ -137,7 +137,10 @@ export default function MapPage() {
         
         {viewMode === 'top' ? (
           <Image
-            src="/images/mall-top-view.png"
+            src={selectedMall === 'Phoenix Mall - Lucknow' 
+              ? "/images/lucknow-mall-top-view.png"
+              : "/images/mall-top-view.png"
+            }
             alt="Mall Top View"
             width={800}
             height={600}
