@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useSearchParams } from 'next/navigation'
 import { Search, MapPin, User, Megaphone } from 'lucide-react'
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -31,14 +32,36 @@ const MOCK_PROMOTIONS = [
 ]
 
 export default function MapPage() {
+  const searchParams = useSearchParams()
   const [viewMode, setViewMode] = useState<ViewMode['type']>('top')
   const [searchQuery, setSearchQuery] = useState('')
+  const [selectedMall, setSelectedMall] = useState('Phoenix Mall - Palladium')
+
+  // Initialize selected mall based on URL parameter
+  useEffect(() => {
+    const mall = searchParams.get('mall')
+    if (mall === 'lucknow') {
+      setSelectedMall('Phoenix Mall - Lucknow')
+    } else if (mall === 'palladium') {
+      setSelectedMall('Phoenix Mall - Palladium')
+    }
+  }, [searchParams])
+
+  // Determine color scheme based on selected mall
+  const colorScheme = selectedMall === 'Phoenix Mall - Lucknow' 
+    ? 'bg-sky-100' // Light blue for Lucknow
+    : 'bg-emerald-100' // Original emerald for Palladium
+
+  // Determine text highlight color based on selected mall
+  const highlightColor = selectedMall === 'Phoenix Mall - Lucknow'
+    ? 'text-sky-600' // Blue text for Lucknow
+    : 'text-emerald-600' // Original emerald text for Palladium
 
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header */}
-      <header className="bg-emerald-100 p-4">
-        <div className="flex items-center gap-2">
+      <header className={colorScheme}>
+        <div className="flex items-center gap-2 p-4">
           <Image
             src="/images/logo.png"
             alt="MapAisle Logo"
@@ -46,7 +69,11 @@ export default function MapPage() {
             height={32}
             className="rounded-lg"
           />
-          <select className="bg-transparent text-lg font-semibold">
+          <select 
+            className="bg-transparent text-lg font-semibold"
+            value={selectedMall}
+            onChange={(e) => setSelectedMall(e.target.value)}
+          >
             <option>Phoenix Mall - Palladium</option>
             <option>Phoenix Mall - Lucknow</option>
           </select>
@@ -107,15 +134,51 @@ export default function MapPage() {
             >
               <h3 className="font-semibold">{promo.storeName}</h3>
               <p className="text-sm text-muted-foreground">{promo.description}</p>
-              <p className="text-emerald-600 font-bold mt-2">{promo.discount}</p>
+              <p className={`font-bold mt-2 ${highlightColor}`}>{promo.discount}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Upcoming Events */}
+      <div className="p-4 bg-white border-t">
+        <h2 className="text-lg font-semibold mb-4">Upcoming Events</h2>
+        <div className="flex gap-4 overflow-x-auto pb-4">
+          {[
+            {
+              id: '1',
+              name: 'Winter Wonderland',
+              date: 'Dec 15 - Dec 25',
+              description: 'Magical winter-themed decorations and special performances'
+            },
+            {
+              id: '2',
+              name: 'Beer Festival',
+              date: 'Nov 10 - Nov 12',
+              description: 'Featuring craft beers from local breweries'
+            },
+            {
+              id: '3',
+              name: 'Food Carnival',
+              date: 'Nov 25 - Nov 26',
+              description: 'International cuisine from mall restaurants'
+            }
+          ].map((event) => (
+            <div
+              key={event.id}
+              className="flex-shrink-0 w-64 p-4 border rounded-lg"
+            >
+              <h3 className="font-semibold">{event.name}</h3>
+              <p className={`font-medium ${highlightColor}`}>{event.date}</p>
+              <p className="text-sm text-muted-foreground mt-2">{event.description}</p>
             </div>
           ))}
         </div>
       </div>
 
       {/* Navigation Bar */}
-      <nav className="bg-emerald-100 p-4">
-        <div className="flex justify-around">
+      <nav className={colorScheme}>
+        <div className="flex justify-around p-4">
           <Button variant="ghost" size="icon">
             <Megaphone className="h-6 w-6" />
           </Button>
